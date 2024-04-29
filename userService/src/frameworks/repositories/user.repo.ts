@@ -87,16 +87,7 @@ export class userRepository implements IUserCase {
     }
   }
 
-  async getAllUsers(): Promise<any> {
-    try {
-      const allUsers = await this.UserModel.find({}, { password: 0 });
-      console.log("get all user details ", allUsers);
-      return allUsers;
-    } catch (error) {
-      console.error("Fetching all users failed:", error);
-      throw new Error("Error while fetching all users");
-    }
-  }
+
 
   async editUser(userId: string, data: UserEntity, req: any): Promise<any> {
     try {
@@ -164,129 +155,6 @@ export class userRepository implements IUserCase {
     }
   }
 
-  async getRandomUser(userId: string): Promise<any> {
-    try {
-      const likedUsers = await this.UserModel.findOne({ _id: userId })
-        .populate("liked.user")
-        .select("liked.user");
-      if (!likedUsers || likedUsers.liked.length === 0) {
-        const allUsers = await this.UserModel.find({}, { password: 0 });
-        return allUsers;
-      }
-      const likedUserIds =
-        likedUsers.liked.map((likedUser: any) => likedUser.user._id) || [];
-      const randomUser = await this.UserModel.find({
-        _id: { $nin: likedUserIds },
-      });
-      console.log("Liked User IDs:", likedUserIds.length);
-      console.log("Random User:", randomUser);
-      return randomUser;
-    } catch (error) {
-      console.error("Error retrieving random user:", error);
-      return error;
-    }
-  }
-
-  async matchUser(userId: string, likedUserId: string): Promise<any> {
-    try {
-      const isLiked = await this.UserModel.exists({
-        _id: userId,
-        "liked.user": likedUserId,
-      });
-      if (!isLiked) {
-        const likedUserObject = { user: likedUserId, likedAt: Date.now() };
-        const data = await this.UserModel.findByIdAndUpdate(userId, {
-          $push: { liked: likedUserObject },
-        });
-
-        console.log("User liked successfully:", data);
-        const isMatched = await this.UserModel.exists({
-          _id: likedUserId,
-          "liked.user": userId,
-        });
-
-        if (isMatched) {
-          const datas = await Promise.all([
-            this.UserModel.updateOne(
-              { _id: userId, "liked.user": likedUserId },
-              { $set: { "liked.$.matched": true } }
-            ),
-            this.UserModel.updateOne(
-              { _id: likedUserId, "liked.user": userId },
-              { $set: { "liked.$.matched": true } }
-            ),
-          ]);
-          console.log(datas, "the liked data is status is here");
-
-          return { data, isMatched: true };
-        }
-
-        return { data, isMatched: false };
-      } else {
-        console.log("User already liked");
-        return { isMatched: true };
-      }
-    } catch (error) {
-      console.error("Error while matching user:", error);
-      return { error, isMatched: false };
-    }
-  }
-
-  async blockUser(userId: string): Promise<any> {
-    try {
-      const user = await this.UserModel.findById(userId);
-      if (!user) {
-        return { message: "User not found" };
-      }
-      user.status = !user.status;
-
-      await user.save();
-
-      if (user.status) {
-        return { message: "User is now unblocked" };
-      } else {
-        return { message: "User is now blocked" };
-      }
-    } catch (error) {
-      console.error("Error blocking/unblocking user:", error);
-      throw error;
-    }
-  }
-
-  async userProfile(userId: string): Promise<any> {
-    try {
-      const user = await this.UserModel.findById(userId);
-      if (user) {
-        console.log(user.status, "User is now blocked");
-        return user;
-      } else {
-        console.error(`User with ID ${userId} not found.`);
-        return undefined;
-      }
-    } catch (error) {
-      console.error("Error retrieving user status:", error);
-      throw error;
-    }
-  }
-
-  async likedUsers(userId: string): Promise<any> {
-    try {
-      const likedUsers: LikedUserInfo[] = await this.UserModel.find({
-        "liked.user": userId,
-      })
-        .select("_id username profilePicture dob")
-        .lean();
-      likedUsers.forEach((likedUser) => {
-        likedUser.age = this.calculateAge(likedUser.dob);
-      });
-
-      console.log(likedUsers, "the data");
-      return likedUsers;
-    } catch (error) {
-      console.error("Error finding liked users:", error);
-      throw error;
-    }
-  }
 
   async adminSignin(data: UserEntity): Promise<any> {
     try {
@@ -311,17 +179,4 @@ export class userRepository implements IUserCase {
     }
   }
 
-  private calculateAge(dateOfBirth: any): number {
-    const today = new Date();
-    const birthDate = new Date(dateOfBirth);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
-    }
-    return age;
-  }
 }

@@ -16,18 +16,18 @@ export class UserRouter {
   userController = new UserController(this.userUsecase, this.consumerMessage);
 
   constructor() {
- 
-
     this.router.post(
       "/user/editUser/:userId",
       multerConfig.single("uploadPic"),
       authenticateToken,
       (req: Request, res: Response) => {
         this.userController.editUser(req, res);
-        console.log(req.files, "hhh");
       }
     );
 
+    this.router.post("/user/admin/signin", (req: Request, res: Response) => {
+      this.userController.adminSignin(req, res);
+    });
   }
 
   async rabbitMq() {

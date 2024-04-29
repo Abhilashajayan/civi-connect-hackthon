@@ -19,9 +19,6 @@ export class UserUsecase implements IUserCase {
     return this.UserRepository.googleAuth(data);
   }
 
-  async getAllUsers(): Promise<any> {
-    return this.UserRepository.getAllUsers();
-  }
 
   async changePassword(data: any): Promise<void> {
     return this.UserRepository.changePassword(data);
@@ -29,5 +26,9 @@ export class UserUsecase implements IUserCase {
 
   async editUser(userId: string, data: UserEntity, req: any): Promise<void> {
     return this.UserRepository.editUser(userId, data, req);
+  }
+
+  async adminSignin(data: UserEntity): Promise<void> {
+    return this.UserRepository.adminSignin(data);
   }
 }

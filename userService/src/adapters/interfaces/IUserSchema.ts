@@ -9,11 +9,6 @@ export interface IUserSchema extends Document {
     dob: Date;
     phone: number;
     profilePicture: string;
-    gender: string;
-    interest: string[];
     status: boolean;
     createdAt: Date;
-    location: string; 
-    job: string; 
-    liked: string[];
 }
