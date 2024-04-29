@@ -2,7 +2,6 @@ import { IUserSchema } from "../adapters/interfaces/IUserSchema";
 import { IUserCase } from "../adapters/interfaces/IUserUsecase";
 import { userRepository } from "../frameworks/repositories/user.repo";
 import { UserEntity } from "../entity/user.entity";
-import cron from 'node-cron';
 import { Request } from "express";
 
 export class UserUsecase implements IUserCase {
