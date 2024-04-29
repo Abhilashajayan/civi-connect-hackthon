@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 type ConnectionURI = string;
 
 export const dbConnection = async () => {
-  let uri:ConnectionURI= process.env.MONGO_URI || "mongodb://localhost/userServices";
+  let uri:ConnectionURI= process.env.MONGO_URI ;
     try {
       mongoose.set('strictQuery', true);
       await mongoose.connect(uri);

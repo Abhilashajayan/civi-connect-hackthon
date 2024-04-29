@@ -12,9 +12,9 @@ export class Rabbitmq {
       const rabbitmqUrl = "amqp://localhost:5672";
       this.Connection = await amqp.connect(rabbitmqUrl);
       this.Channel = await this.Connection.createChannel();
-      console.log("the connection is established");
+      console.log("The rabbitmq connection is established");
     } catch (err) {
-      console.log(err, "the connection is not established");
+      console.log(err, "The rabbitmq connection is not established");
       process.exit(1);
     }
   }
