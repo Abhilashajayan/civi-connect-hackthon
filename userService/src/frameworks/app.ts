@@ -4,10 +4,12 @@ import nocache from 'nocache';
 import { dbConnection } from './database/database.conn';
 import { UserRouter, userRouter } from '../adapters/routes/user.routes';
 const userRouterObj = new UserRouter();
+import { configDotenv } from 'dotenv';
+configDotenv();
 
 
 const app = express();
-const port =  process.env.PORT || 3003;
+const port =  process.env.PORT ;
 userRouterObj.rabbitMq();
 app.use(cors());
 
