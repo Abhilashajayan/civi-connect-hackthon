@@ -19,6 +19,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 dbConnection();
 app.use(userRouter);
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server Running on ${port}`);
+  });
+  const io = require("socket.io")(server, {
+    pingTimeout: 60000,
+    cors: {
+      origin: "http://localhost:3000",
+    },
+  });
+  io.on('connection', (socket : any) => {
+    console.log(`Socket connected: ${socket.id}`);
+    socket.on('audioData', (dataArrayBuffer :any) => {
+      console.log('Received audio data:', dataArrayBuffer);
+    });
+    socket.on('disconnect', () => {
+      console.log(`Socket disconnected: ${socket.id}`);
+    });
   });

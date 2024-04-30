@@ -4,9 +4,9 @@ configDotenv();
 
 
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API,
-    api_secret: process.env.API,
+    cloud_name: 'drpmfgb5x',
+    api_key: '391749527228236',
+    api_secret: 'usDlTdEtlOisMRhG_HeWUtcae',
   });
   
 export default cloudinary;

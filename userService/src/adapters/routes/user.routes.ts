@@ -19,7 +19,6 @@ export class UserRouter {
     this.router.post(
       "/user/editUser/:userId",
       multerConfig.single("uploadPic"),
-      authenticateToken,
       (req: Request, res: Response) => {
         this.userController.editUser(req, res);
       }

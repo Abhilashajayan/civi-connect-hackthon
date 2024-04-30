@@ -11,7 +11,9 @@ export class UserController {
   async editUser(req: Request, res: Response) {
     try {
       const userId: string = req.params.userId;
-      const data = req.body;
+      console.log(userId);
+      const data:any = req.body;
+      console.log(data);
       const dataUser = await this.userUsecase.editUser(userId, data, req);
       return res.status(200).json({ dataUser });
     } catch (error) {
